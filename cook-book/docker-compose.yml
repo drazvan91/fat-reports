@@ -8,21 +8,16 @@ services:
       - '5432:5432'
     environment:
       POSTGRES_PASSWORD: example
-    networks:
-      - database
+      POSTGRES_DB: fatreports
 
   pg-admin:
     image: dpage/pgadmin4
     restart: always
     ports:
       - '8081:80'
+    links:
+      - 'db:db'
     environment:
       PGADMIN_DEFAULT_EMAIL: fatuser@email.com
       PGADMIN_DEFAULT_PASSWORD: fatpassword
       PGADMIN_LISTEN_PORT: 80
-    networks:
-      - database
-
-networks:
-  database:
-    driver: bridge

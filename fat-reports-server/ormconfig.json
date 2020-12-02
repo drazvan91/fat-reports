@@ -1,0 +1,18 @@
+{
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "postgres",
+    "password": "example",
+    "database": "fatreports",
+    "entities": [
+        "dist/**/*.entity{.ts,.js}"
+    ],
+    "migrationsTableName": "typeorm_migration",
+    "migrations": [
+        "src/fat-database/migrations/*.ts"
+    ],
+    "cli": {
+        "migrationsDir": "src/fat-database/migrations"
+    }
+}
