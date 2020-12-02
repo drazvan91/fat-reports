@@ -1,0 +1,9 @@
+type Query {
+  testSuites: [TestSuite]
+}
+
+type TestSuite {
+  id: Int!
+  name: String!
+  testScripts: [TestScript]
+}

@@ -1,0 +1,5 @@
+type TestScript {
+  testSuite: TestSuite
+  name: String!
+  category: Int!
+}
