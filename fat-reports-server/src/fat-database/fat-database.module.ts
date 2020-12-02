@@ -4,6 +4,8 @@ import { TestSuite } from './entities/test-suite.entity';
 import { TestSuite1606923887748 } from './migrations/1606923887748-TestSuite';
 import { AddTestScriptTable1606924685523 } from './migrations/1606924685523-AddTestScriptTable';
 import { UpdateFKs1606924869285 } from './migrations/1606924869285-UpdateFKs';
+import { TestSuiteRepository } from './repositories/test-suite.repository';
+import { Seeds } from './seeds/seeds';
 
 @Module({
   imports: [
@@ -26,5 +28,6 @@ import { UpdateFKs1606924869285 } from './migrations/1606924869285-UpdateFKs';
       ],
     }),
   ],
+  providers: [TestSuiteRepository, Seeds],
 })
 export class FatDatabaseModule {}
