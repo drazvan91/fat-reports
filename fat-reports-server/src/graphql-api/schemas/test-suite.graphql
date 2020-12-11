@@ -3,7 +3,7 @@ type Query {
 }
 
 type TestSuite {
-  id: Int!
+  id: String!
   name: String!
   testScripts: [TestScript]
 }

@@ -1,27 +1,28 @@
 import { Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { TestSuiteRepo } from 'src/fat-database/repositories/test-suite.repository';
 import { TestSuite } from '../graphql-models';
 
 @Resolver('TestSuite')
 export class TestSuiteResolver {
+  constructor(private testSuiteRepo: TestSuiteRepo) {}
+
   @Query()
   async testSuites() {
-    // const testSuites = await repository.getAllTestSuites();
+    const testSuites = await this.testSuiteRepo.getAll();
 
-    return [
-      {
-        id: 1,
-        name: 'something else',
-      },
-      {
-        id: 2,
-        name: 'test Suite 2',
-      },
-    ];
+    const result = testSuites.map((testSuite) => {
+      return {
+        id: testSuite.guid,
+        name: testSuite.name,
+      };
+    });
+
+    return result;
   }
 
   @ResolveField()
   async testScripts(@Parent() testSuite) {
-    if (testSuite.id === 1) {
+    if (testSuite.id === 'guid1') {
       return [
         { id: 1, name: 'test script 1', category: 1 },
         { id: 2, name: 'test script 3', category: 3 },

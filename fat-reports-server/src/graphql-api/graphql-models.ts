@@ -7,6 +7,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface TestScript {
+    id: string;
     testSuite?: TestSuite;
     name: string;
     category: number;
@@ -17,7 +18,7 @@ export interface IQuery {
 }
 
 export interface TestSuite {
-    id: number;
+    id: string;
     name: string;
     testScripts?: TestScript[];
 }

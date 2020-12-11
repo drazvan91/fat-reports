@@ -1,9 +1,9 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { TestSuiteRepository } from '../repositories/test-suite.repository';
+import { TestSuiteRepo } from '../repositories/test-suite.repository';
 
 @Injectable()
 export class Seeds implements OnModuleInit {
-  constructor(private testSuiteRepo: TestSuiteRepository) {}
+  constructor(private testSuiteRepo: TestSuiteRepo) {}
 
   public async onModuleInit() {
     await this.seedTestSuite();
@@ -14,7 +14,22 @@ export class Seeds implements OnModuleInit {
     if ((await this.testSuiteRepo.count()) > 0) {
       return;
     }
-    console.log('to be continued ');
+
+    await this.testSuiteRepo.create({
+      guid: 'guid1',
+      name: 'General tests',
+      testScripts: [],
+    });
+    await this.testSuiteRepo.create({
+      guid: 'guid2',
+      name: 'Home page tests',
+      testScripts: [],
+    });
+    await this.testSuiteRepo.create({
+      guid: 'guid3',
+      name: 'Login screen tests',
+      testScripts: [],
+    });
   }
 
   public async seedTestScripts() {
