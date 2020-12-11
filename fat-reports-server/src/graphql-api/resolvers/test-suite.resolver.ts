@@ -1,10 +1,14 @@
 import { Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { TestSuiteRepo } from 'src/fat-database/repositories/test-suite.repository';
+import { TestScriptRepo } from 'src/fat-database/repositories/test-script.repo';
+import { TestSuiteRepo } from 'src/fat-database/repositories/test-suite.repo';
 import { TestSuite } from '../graphql-models';
 
 @Resolver('TestSuite')
 export class TestSuiteResolver {
-  constructor(private testSuiteRepo: TestSuiteRepo) {}
+  constructor(
+    private testSuiteRepo: TestSuiteRepo,
+    private testScriptRepo: TestScriptRepo,
+  ) {}
 
   @Query()
   async testSuites() {
@@ -21,18 +25,29 @@ export class TestSuiteResolver {
   }
 
   @ResolveField()
-  async testScripts(@Parent() testSuite) {
-    if (testSuite.id === 'guid1') {
-      return [
-        { id: 1, name: 'test script 1', category: 1 },
-        { id: 2, name: 'test script 3', category: 3 },
-        { id: 3, name: 'test script 2', category: 2 },
-      ];
-    } else {
-      return [
-        { id: 4, name: 'test script 4', category: 1 },
-        { id: 5, name: 'test script 5', category: 3 },
-      ];
+  async name(@Parent() testSuite) {
+    if (testSuite.name) {
+      return testSuite.name;
     }
+
+    const suite = await this.testSuiteRepo.getById(testSuite.id);
+
+    return suite.name;
+  }
+
+  @ResolveField()
+  async testScripts(@Parent() testSuite) {
+    const scripts = await this.testScriptRepo.getBySuiteId(testSuite.id);
+
+    return scripts.map((s) => {
+      return {
+        id: s.guid,
+        testSuite: {
+          id: s.testSuiteGuid,
+        },
+        name: s.name,
+        category: 1,
+      };
+    });
   }
 }

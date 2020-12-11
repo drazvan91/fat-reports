@@ -1,5 +1,5 @@
 type TestScript {
-  id: String!
+  id: ID!
   testSuite: TestSuite
   name: String!
   category: Int!

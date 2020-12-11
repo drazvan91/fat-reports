@@ -20,4 +20,8 @@ export class TestSuiteRepo {
   public getAll() {
     return this.testSuiteRepo.find();
   }
+
+  public getById(guid: string) {
+    return this.testSuiteRepo.findOne(guid);
+  }
 }
