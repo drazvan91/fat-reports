@@ -1,8 +1,9 @@
 import * as React from 'react';
+import { ApolloClient, gql, InMemoryCache, useQuery } from '@apollo/client';
 
-import { Collapse, Select } from 'antd';
+import { Collapse, Select, List, Avatar } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 
 const { Panel } = Collapse;
 
@@ -28,73 +29,87 @@ interface TestScriptModel {
   name: string;
 }
 
-function getTestSuites(): TestSuiteModel[] {
-  return [
-    {
-      id: '1',
-      name: 'Home page test suit',
-      testScripts: [
-        {
-          id: '1',
-          name: 'Some test',
-        },
-        {
-          id: '2',
-          name: 'Some test 2',
-        },
-      ],
-    },
-    {
-      id: '32',
-      name: 'Home page test suit2',
-      testScripts: [
-        {
-          id: '1',
-          name: 'Some test',
-        },
-      ],
-    },
-    {
-      id: '453',
-      name: 'Home page test suit3',
-      testScripts: [
-        {
-          id: '1',
-          name: 'Some test',
-        },
-      ],
-    },
-    {
-      id: '123',
-      name: 'Home page test suit4',
-      testScripts: [
-        {
-          id: '1',
-          name: 'Some test',
-        },
-      ],
-    },
-  ];
+const TEST_SUITES_QUERY = gql`
+  {
+    testSuites {
+      id
+      name
+      testScripts {
+        id
+        name
+      }
+    }
+  }
+`;
+
+const client = new ApolloClient({
+  uri: 'http://localhost:3000/graphql',
+  cache: new InMemoryCache(),
+});
+
+interface GetTestSuitesResult {
+  testSuites: TestSuiteModel[];
 }
 
 export function TestSuitesPage() {
-  const testSuites = useMemo(() => getTestSuites(), []);
+  // const testSuites = useMemo(() => getTestSuites(), []);
+  const { loading, error, data } = useQuery<GetTestSuitesResult>(
+    TEST_SUITES_QUERY,
+    {
+      client,
+    }
+  );
 
-  console.log('Hey there', testSuites);
+  if (loading) {
+    return <div>Loading. Please wait.</div>;
+  }
+
+  if (error || !data) {
+    return <div>Error: {error}</div>;
+  }
+
+  console.log(data);
+
+  const activeIds = data.testSuites.map((ts) => ts.id);
 
   return (
-    <Collapse defaultActiveKey={['1']}>
-      {testSuites.map((testSuite) => {
+    <Collapse defaultActiveKey={activeIds}>
+      {data.testSuites.map((testSuite) => {
         return (
           <Panel
             header={testSuite.name}
             key={testSuite.id}
             extra={getToolbarExtraHeader()}
           >
-            <div>sd</div>
+            <List
+              dataSource={testSuite.testScripts}
+              renderItem={(testScript) => {
+                return <TestSuiteItem testScript={testScript}></TestSuiteItem>;
+              }}
+            ></List>
           </Panel>
         );
       })}
     </Collapse>
+  );
+}
+
+interface TestSuiteItemProps {
+  testScript: TestScriptModel;
+}
+
+function TestSuiteItem(props: TestSuiteItemProps) {
+  const testSuite = props.testScript;
+
+  return (
+    <List.Item>
+      <List.Item.Meta
+        avatar={
+          <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+        }
+        title={<a href="https://ant.design">{testSuite.name}</a>}
+        description="A description to be added later"
+      />
+    </List.Item>
   );
 }
