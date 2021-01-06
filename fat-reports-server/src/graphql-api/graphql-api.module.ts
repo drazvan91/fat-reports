@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql/dist/graphql.module';
 import { join } from 'path';
 import { FatDatabaseModule } from 'src/fat-database/fat-database.module';
-import { isTypeReferenceNode } from 'typescript';
 import { TestSuiteResolver } from './resolvers/test-suite.resolver';
 
 @Module({

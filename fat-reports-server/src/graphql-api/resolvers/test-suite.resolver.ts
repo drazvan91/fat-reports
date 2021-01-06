@@ -1,7 +1,6 @@
 import { Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { TestScriptRepo } from 'src/fat-database/repositories/test-script.repo';
 import { TestSuiteRepo } from 'src/fat-database/repositories/test-suite.repo';
-import { TestSuite } from '../graphql-models';
 
 @Resolver('TestSuite')
 export class TestSuiteResolver {
